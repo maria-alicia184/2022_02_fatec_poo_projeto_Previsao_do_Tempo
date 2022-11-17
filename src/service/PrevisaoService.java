@@ -3,6 +3,7 @@ package service;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import org.json.JSONArray;
@@ -15,6 +16,11 @@ public class PrevisaoService {
     public void armazenarPrevisaoOracleCloud(Previsao p) throws Exception{
         JSONObject pJSON = new JSONObject();
         pJSON.put("cidade", p.getCidade());
+        HttpRequest req = HttpRequest.newBuilder().
+        POST(BodyPublishers.ofString(pJSON.toString())).
+        uri(URI.create("url oracle aqui")).
+        header("Content-Type", "application/json").
+        build();
         System.out.println(pJSON);
     }
     public void obterPrevisoesWeatherMap(
