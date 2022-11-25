@@ -24,8 +24,6 @@ public class App {
 
         PrevisaoService service = new PrevisaoService();
 
-
-
         
         //service.obterPrevisoesWeatherMap(
            // WEATHER_MAP_BASEURL, 
