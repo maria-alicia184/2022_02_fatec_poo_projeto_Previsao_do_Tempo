@@ -11,17 +11,30 @@ import org.json.JSONObject;
 
 import model.Previsao;
 
+import javax.swing.*;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class PrevisaoService {
     private HttpClient client = HttpClient.newBuilder().build(); //capaz de enviar requisição
     public void armazenarPrevisaoOracleCloud(Previsao p) throws Exception{
+        Properties properties = new Properties(); //lê o arquivo de propriedade p/ link oracle cloud
+        properties.load(new FileInputStream("src/App.properties"));
+        final String LINK_ORACLE_CLOUD =
+                    properties.getProperty("LINK_ORACLE_CLOUD");
+                    
         JSONObject pJSON = new JSONObject();
         pJSON.put("cidade", p.getCidade());
         HttpRequest req = HttpRequest.newBuilder().
         POST(BodyPublishers.ofString(pJSON.toString())).
-        uri(URI.create("url oracle aqui")).
+        uri(URI.create(LINK_ORACLE_CLOUD)).
         header("Content-Type", "application/json").
         build();
         System.out.println(pJSON);
+
     }
     public void obterPrevisoesWeatherMap(
         String url,
@@ -48,13 +61,22 @@ public class PrevisaoService {
         for(int i =0; i < list.length(); i++){
             JSONObject previsaoJSON = list.getJSONObject(i);
             JSONObject main = previsaoJSON.getJSONObject("main");
-            double temp_min = main.getDouble("temp_min");
-            double temp_max = main.getDouble("temp_max");
+            Double temp_min = main.getDouble("temp_min");
+            Double temp_max = main.getDouble("temp_max");
             String dt_txt = previsaoJSON.getString("dt_txt");
-            Previsao p = 
-                new Previsao(0, temp_min, temp_max, cidade, dt_txt);
 
-                System.out.println(p);
+            Previsao p = new Previsao(0, temp_min, temp_max, cidade, dt_txt);
+
+            System.out.print("\nCidade: " + p.getCidade()+"\n Temperatura maxima: "+ p.getTemperaturaMaxima() + " Temperatura minima: "
+                    + p.getTemperaturaMinima() + " Data: " + dt_txt);
+
+                //Date data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dt_txt);
+                //String dataFormatada = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(data);
+                //p.setData(dataFormatada);
+                //p.Data(dataFormatada);
+
+
+
         }
     }
 }
